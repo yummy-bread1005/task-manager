@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>タスク管理</title>
+<meta name="description" content="個人用のシンプルなタスク管理ツール" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#3B6255" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="タスク管理" />
+<style>
+  :root {
+    --paper: #EFF0E9;
+    --paper-raised: #E5E8DB;
+    --ink: #242822;
+    --ink-soft: #6E7268;
+    --ink-faint: #A7ABA0;
+    --line: #D6D9CB;
+    --pine: #3B6255;
+    --rust: #A6432D;
+    --rust-soft: #F1E1DA;
+    --gold: #A9822F;
+    --done: #8C9587;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    padding: max(32px, env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
+  }
+  .tm-shell { max-width: 640px; margin: 0 auto; }
+  .tm-header { margin-bottom: 28px; }
+  .tm-title {
+    font-family: Georgia, "Iowan Old Style", "Hiragino Mincho ProN", serif;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 0 0 6px;
+  }
+  .tm-subtitle { font-size: 14px; color: var(--ink-soft); margin: 0; }
+
+  .tm-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 16px 18px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 22px;
+  }
+  .tm-input-title {
+    flex: 1 1 200px;
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    background: transparent;
+    font-size: 16px;
+    padding: 6px 2px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+    font-family: inherit;
+  }
+  .tm-input-title:focus { border-bottom-color: var(--pine); }
+  .tm-input-title::placeholder { color: var(--ink-faint); }
+
+  .tm-input-date, .tm-select {
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    background: transparent;
+    font-size: 13px;
+    padding: 6px 2px;
+    color: var(--ink-soft);
+    outline: none;
+    font-family: inherit;
+  }
+  .tm-input-date:focus, .tm-select:focus { border-bottom-color: var(--pine); }
+
+  .tm-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--pine);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-family: inherit;
+  }
+  .tm-add-btn:active { background: #2E4C42; }
+  .tm-add-btn:disabled { background: var(--ink-faint); cursor: default; }
+
+  .tm-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+  }
+  .tm-tab {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 8px 2px 10px;
+    cursor: pointer;
+    position: relative;
+    font-family: inherit;
+  }
+  .tm-tab.active { color: var(--ink); font-weight: 600; }
+  .tm-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: var(--pine);
+    border-radius: 2px;
+  }
+
+  .tm-group { margin-top: 22px; }
+  .tm-group-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tm-group-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+  .tm-group-dot.rust { background: var(--rust); }
+  .tm-group-dot.pine { background: var(--pine); }
+  .tm-group-dot.ink { background: var(--ink-faint); }
+  .tm-group-dot.done { background: var(--done); }
+
+  .tm-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tm-row:last-child { border-bottom: none; }
+
+  .tm-check {
+    flex: none;
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid var(--ink-faint);
+    background: #fff;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .tm-check.checked { background: var(--pine); border-color: var(--pine); }
+  .tm-check svg { width: 13px; height: 13px; color: #fff; }
+  .tm-check.checked svg { animation: tm-pop 0.18s ease forwards; }
+  @keyframes tm-pop { from { transform: scale(0); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .tm-check.checked svg { animation: none; }
+  }
+
+  .tm-priority-dot {
+    flex: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+  .tm-priority-dot.high { background: var(--rust); }
+  .tm-priority-dot.medium { background: var(--gold); }
+  .tm-priority-dot.low { background: var(--ink-faint); }
+
+  .tm-title-text {
+    flex: 1;
+    min-width: 120px;
+    font-size: 15px;
+    cursor: text;
+    padding: 2px 0;
+    word-break: break-word;
+  }
+  .tm-title-text.done { color: var(--ink-faint); text-decoration: line-through; }
+
+  .tm-title-input {
+    flex: 1;
+    min-width: 120px;
+    font-size: 15px;
+    border: none;
+    border-bottom: 1.5px solid var(--pine);
+    background: transparent;
+    outline: none;
+    padding: 2px 0;
+    font-family: inherit;
+    color: var(--ink);
+  }
+
+  .tm-due-btn {
+    flex: none;
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 2px 4px;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .tm-due-btn.overdue { color: var(--rust); font-weight: 600; }
+  .tm-due-input {
+    flex: none;
+    border: none;
+    border-bottom: 1.5px solid var(--pine);
+    background: transparent;
+    font-size: 12px;
+    color: var(--ink);
+    outline: none;
+    font-family: inherit;
+  }
+
+  .tm-delete-btn {
+    flex: none;
+    background: none;
+    border: none;
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    border-radius: 5px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .tm-delete-btn:hover { color: var(--rust); background: var(--rust-soft); }
+  .tm-delete-btn svg { width: 15px; height: 15px; }
+
+  .tm-empty {
+    margin-top: 40px;
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+  }
+
+  .tm-check:focus-visible, .tm-priority-dot:focus-visible, .tm-delete-btn:focus-visible,
+  .tm-tab:focus-visible, .tm-due-btn:focus-visible, .tm-add-btn:focus-visible {
+    outline: 2px solid var(--pine);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 20px 14px 40px; }
+    .tm-title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+  <div class="tm-shell">
+    <div class="tm-header">
+      <h1 class="tm-title">タスク管理</h1>
+      <p class="tm-subtitle" id="subtitle"></p>
+    </div>
+
+    <form class="tm-form" id="add-form">
+      <input class="tm-input-title" id="new-title" type="text" placeholder="新しいタスクを入力" autocomplete="off" />
+      <input class="tm-input-date" id="new-due" type="date" />
+      <select class="tm-select" id="new-priority">
+        <option value="high">優先度: 高</option>
+        <option value="medium" selected>優先度: 中</option>
+        <option value="low">優先度: 低</option>
+      </select>
+      <button class="tm-add-btn" id="add-btn" type="submit" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        追加
+      </button>
+    </form>
+
+    <div class="tm-tabs" id="tabs"></div>
+
+    <div id="list-area"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
