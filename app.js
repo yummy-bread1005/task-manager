@@ -214,7 +214,6 @@
       );
     }).join('');
 
-    // フォーカスが必要な編集中の入力にフォーカスを当てる
     if (state.editingId) {
       var input = listEl.querySelector('[data-role="title-input"][data-id="' + state.editingId + '"]');
       if (input) { input.focus(); input.select(); }
@@ -224,8 +223,6 @@
       if (dueInput) { dueInput.focus(); }
     }
   }
-
-  // --- イベント設定 ---
 
   function initForm() {
     var form = document.getElementById('add-form');

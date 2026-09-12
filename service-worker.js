@@ -1,11 +1,11 @@
-const CACHE_NAME = 'task-manager-v1';
+const CACHE_NAME = 'task-manager-v2';
 const ASSETS = [
   './',
   './index.html',
   './app.js',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
+  './icon-192.jpg',
+  './icon-512.jpg',
 ];
 
 self.addEventListener('install', (event) => {

@@ -3,27 +3,28 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>タスク管理</title>
-<meta name="description" content="個人用のシンプルなタスク管理ツール" />
+<title>焼きたてタスク管理</title>
+<meta name="description" content="焼き立てパン屋さんのような温かみのある個人用タスク管理ツール" />
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#3B6255" />
-<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="theme-color" content="#8C531B" />
+<link rel="apple-touch-icon" href="icon-192.jpg" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="タスク管理" />
 <style>
   :root {
-    --paper: #EFF0E9;
-    --paper-raised: #E5E8DB;
-    --ink: #242822;
-    --ink-soft: #6E7268;
-    --ink-faint: #A7ABA0;
-    --line: #D6D9CB;
-    --pine: #3B6255;
-    --rust: #A6432D;
-    --rust-soft: #F1E1DA;
-    --gold: #A9822F;
-    --done: #8C9587;
+    /* パン屋風のカラーパレット */
+    --paper: #FAF6EE;           /* ふんわり小麦・生地色 */
+    --paper-raised: #F2E9D8;    /* クラフト紙・バスケット風 */
+    --ink: #3D2B1F;              /* ダークチョコレート風のテキスト */
+    --ink-soft: #7A6251;         /* 優しめのブラウン */
+    --ink-faint: #B5A191;        /* 薄いベージュブラウン */
+    --line: #E2D3BE;             /* クッキー生地風ライン */
+    --crust: #8C531B;            /* パンの耳・香ばしいブラウン */
+    --bakery-accent: #D47A22;   /* こんがり狐色 */
+    --jam: #B84A39;              /* いちごジャム（期限切れ・優先度高） */
+    --butter: #DDA835;           /* バター（優先度中） */
+    --done: #9E9185;             /* 完了済み */
   }
   * { box-sizing: border-box; }
   html, body {
@@ -31,119 +32,139 @@
     padding: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    /* メイリオを最優先に指定 */
+    font-family: 'Meiryo', 'メイリオ', -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
   body {
     padding: max(32px, env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
   }
   .tm-shell { max-width: 640px; margin: 0 auto; }
-  .tm-header { margin-bottom: 28px; }
-  .tm-title {
-    font-family: Georgia, "Iowan Old Style", "Hiragino Mincho ProN", serif;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    margin: 0 0 6px;
+  .tm-header { 
+    margin-bottom: 28px; 
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
-  .tm-subtitle { font-size: 14px; color: var(--ink-soft); margin: 0; }
+  .tm-header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(140, 83, 27, 0.15);
+  }
+  .tm-title {
+    font-size: 32px; /* 1サイズ拡大 (30px -> 32px) */
+    font-weight: 700;
+    color: var(--crust);
+    letter-spacing: 0.02em;
+    margin: 0 0 4px;
+  }
+  .tm-subtitle { 
+    font-size: 15px; /* 1サイズ拡大 (14px -> 15px) */
+    color: var(--ink-soft); 
+    margin: 0; 
+  }
 
   .tm-form {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
-    padding: 16px 18px;
+    padding: 18px 20px;
     background: var(--paper-raised);
     border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-bottom: 22px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(61, 43, 31, 0.04);
   }
   .tm-input-title {
     flex: 1 1 200px;
     border: none;
-    border-bottom: 1.5px solid var(--line);
+    border-bottom: 2px solid var(--line);
     background: transparent;
-    font-size: 16px;
+    font-size: 17px; /* 1サイズ拡大 (16px -> 17px) */
     padding: 6px 2px;
     color: var(--ink);
     outline: none;
     transition: border-color 0.15s ease;
     font-family: inherit;
   }
-  .tm-input-title:focus { border-bottom-color: var(--pine); }
+  .tm-input-title:focus { border-bottom-color: var(--bakery-accent); }
   .tm-input-title::placeholder { color: var(--ink-faint); }
 
   .tm-input-date, .tm-select {
     border: none;
-    border-bottom: 1.5px solid var(--line);
+    border-bottom: 2px solid var(--line);
     background: transparent;
-    font-size: 13px;
+    font-size: 14px; /* 1サイズ拡大 (13px -> 14px) */
     padding: 6px 2px;
     color: var(--ink-soft);
     outline: none;
     font-family: inherit;
   }
-  .tm-input-date:focus, .tm-select:focus { border-bottom-color: var(--pine); }
+  .tm-input-date:focus, .tm-select:focus { border-bottom-color: var(--bakery-accent); }
 
   .tm-add-btn {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    background: var(--pine);
+    gap: 6px;
+    background: var(--crust);
     color: #fff;
     border: none;
-    border-radius: 7px;
-    padding: 9px 14px;
-    font-size: 13px;
-    font-weight: 600;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px; /* 1サイズ拡大 (13px -> 14px) */
+    font-weight: 700;
     cursor: pointer;
     transition: background 0.15s ease;
     font-family: inherit;
   }
-  .tm-add-btn:active { background: #2E4C42; }
+  .tm-add-btn:hover { background: var(--bakery-accent); }
+  .tm-add-btn:active { background: #6E3F12; }
   .tm-add-btn:disabled { background: var(--ink-faint); cursor: default; }
 
   .tm-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 18px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 4px;
+    gap: 20px;
+    border-bottom: 2px solid var(--line);
+    margin-bottom: 6px;
   }
   .tm-tab {
     background: none;
     border: none;
-    font-size: 13px;
+    font-size: 14px; /* 1サイズ拡大 (13px -> 14px) */
     color: var(--ink-soft);
-    padding: 8px 2px 10px;
+    padding: 8px 4px 10px;
     cursor: pointer;
     position: relative;
     font-family: inherit;
+    font-weight: 600;
   }
-  .tm-tab.active { color: var(--ink); font-weight: 600; }
+  .tm-tab.active { color: var(--crust); font-weight: 700; }
   .tm-tab.active::after {
     content: '';
     position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: var(--pine);
-    border-radius: 2px;
+    left: 0; right: 0; bottom: -2px;
+    height: 3px;
+    background: var(--bakery-accent);
+    border-radius: 3px;
   }
 
-  .tm-group { margin-top: 22px; }
+  .tm-group { margin-top: 24px; }
   .tm-group-label {
-    font-size: 12.5px;
-    font-weight: 600;
+    font-size: 14px; /* 1サイズ拡大 (12.5px -> 14px) */
+    font-weight: 700;
     color: var(--ink-soft);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
-  .tm-group-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-  .tm-group-dot.rust { background: var(--rust); }
-  .tm-group-dot.pine { background: var(--pine); }
+  .tm-group-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .tm-group-dot.rust { background: var(--jam); }
+  .tm-group-dot.pine { background: var(--bakery-accent); }
   .tm-group-dot.ink { background: var(--ink-faint); }
   .tm-group-dot.done { background: var(--done); }
 
@@ -151,25 +172,25 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    padding: 10px 4px;
-    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    padding: 12px 6px;
+    border-bottom: 1px dashed var(--line);
   }
   .tm-row:last-child { border-bottom: none; }
 
   .tm-check {
     flex: none;
-    width: 20px; height: 20px;
-    border-radius: 5px;
-    border: 1.5px solid var(--ink-faint);
-    background: #fff;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--ink-faint);
+    background: #FFF;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     padding: 0;
     transition: border-color 0.15s ease, background 0.15s ease;
   }
-  .tm-check.checked { background: var(--pine); border-color: var(--pine); }
-  .tm-check svg { width: 13px; height: 13px; color: #fff; }
+  .tm-check.checked { background: var(--bakery-accent); border-color: var(--bakery-accent); }
+  .tm-check svg { width: 14px; height: 14px; color: #fff; }
   .tm-check.checked svg { animation: tm-pop 0.18s ease forwards; }
   @keyframes tm-pop { from { transform: scale(0); } to { transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) {
@@ -178,32 +199,32 @@
 
   .tm-priority-dot {
     flex: none;
-    width: 10px; height: 10px;
+    width: 12px; height: 12px;
     border-radius: 50%;
     cursor: pointer;
     border: none;
     padding: 0;
   }
-  .tm-priority-dot.high { background: var(--rust); }
-  .tm-priority-dot.medium { background: var(--gold); }
+  .tm-priority-dot.high { background: var(--jam); }
+  .tm-priority-dot.medium { background: var(--butter); }
   .tm-priority-dot.low { background: var(--ink-faint); }
 
   .tm-title-text {
     flex: 1;
     min-width: 120px;
-    font-size: 15px;
+    font-size: 16.5px; /* 1サイズ拡大 (15px -> 16.5px) */
     cursor: text;
     padding: 2px 0;
     word-break: break-word;
   }
-  .tm-title-text.done { color: var(--ink-faint); text-decoration: line-through; }
+  .tm-title-text.done { color: var(--done); text-decoration: line-through; }
 
   .tm-title-input {
     flex: 1;
     min-width: 120px;
-    font-size: 15px;
+    font-size: 16.5px; /* 1サイズ拡大 (15px -> 16.5px) */
     border: none;
-    border-bottom: 1.5px solid var(--pine);
+    border-bottom: 2px solid var(--bakery-accent);
     background: transparent;
     outline: none;
     padding: 2px 0;
@@ -215,20 +236,20 @@
     flex: none;
     background: none;
     border: none;
-    font-size: 12px;
+    font-size: 13px; /* 1サイズ拡大 (12px -> 13px) */
     color: var(--ink-soft);
     cursor: pointer;
-    padding: 2px 4px;
+    padding: 2px 6px;
     font-family: inherit;
     white-space: nowrap;
   }
-  .tm-due-btn.overdue { color: var(--rust); font-weight: 600; }
+  .tm-due-btn.overdue { color: var(--jam); font-weight: 700; }
   .tm-due-input {
     flex: none;
     border: none;
-    border-bottom: 1.5px solid var(--pine);
+    border-bottom: 2px solid var(--bakery-accent);
     background: transparent;
-    font-size: 12px;
+    font-size: 13px; /* 1サイズ拡大 (12px -> 13px) */
     color: var(--ink);
     outline: none;
     font-family: inherit;
@@ -242,43 +263,49 @@
     cursor: pointer;
     padding: 4px;
     display: flex;
-    border-radius: 5px;
+    border-radius: 6px;
     transition: color 0.15s ease, background 0.15s ease;
   }
-  .tm-delete-btn:hover { color: var(--rust); background: var(--rust-soft); }
-  .tm-delete-btn svg { width: 15px; height: 15px; }
+  .tm-delete-btn:hover { color: var(--jam); background: #FDE8E5; }
+  .tm-delete-btn svg { width: 16px; height: 16px; }
 
   .tm-empty {
     margin-top: 40px;
-    padding: 28px 20px;
+    padding: 32px 20px;
     text-align: center;
     color: var(--ink-soft);
-    font-size: 13.5px;
-    border: 1px dashed var(--line);
-    border-radius: 10px;
+    font-size: 15px; /* 1サイズ拡大 (13.5px -> 15px) */
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    background: #FFFBF5;
   }
 
   .tm-check:focus-visible, .tm-priority-dot:focus-visible, .tm-delete-btn:focus-visible,
   .tm-tab:focus-visible, .tm-due-btn:focus-visible, .tm-add-btn:focus-visible {
-    outline: 2px solid var(--pine);
+    outline: 2px solid var(--crust);
     outline-offset: 2px;
   }
 
   @media (max-width: 480px) {
     body { padding: 20px 14px 40px; }
-    .tm-title { font-size: 26px; }
+    .tm-title { font-size: 28px; }
+    .tm-header-icon { width: 46px; height: 46px; }
   }
 </style>
 </head>
 <body>
   <div class="tm-shell">
     <div class="tm-header">
-      <h1 class="tm-title">タスク管理</h1>
-      <p class="tm-subtitle" id="subtitle"></p>
+      <!-- JPG画像アイコンの読み込み -->
+      <img src="icon-192.jpg" alt="食パンアイコン" class="tm-header-icon" />
+      <div>
+        <h1 class="tm-title">タスク管理</h1>
+        <p class="tm-subtitle" id="subtitle"></p>
+      </div>
     </div>
 
     <form class="tm-form" id="add-form">
-      <input class="tm-input-title" id="new-title" type="text" placeholder="新しいタスクを入力" autocomplete="off" />
+      <input class="tm-input-title" id="new-title" type="text" placeholder="新しいタスクを入力..." autocomplete="off" />
       <input class="tm-input-date" id="new-due" type="date" />
       <select class="tm-select" id="new-priority">
         <option value="high">優先度: 高</option>
@@ -286,7 +313,7 @@
         <option value="low">優先度: 低</option>
       </select>
       <button class="tm-add-btn" id="add-btn" type="submit" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
         追加
       </button>
     </form>
