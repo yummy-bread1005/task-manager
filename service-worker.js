@@ -1,4 +1,4 @@
-const CACHE_NAME = 'task-manager-v3';
+const CACHE_NAME = 'task-manager-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
+  './bread-deco.png',
 ];
 
 self.addEventListener('install', (event) => {

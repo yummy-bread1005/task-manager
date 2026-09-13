@@ -14,17 +14,14 @@
 <style>
   :root {
     --paper: #FBF4E6;
-    --paper-raised: #F3E7CD;
+    --card: #FFFFFF;
     --ink: #4A3222;
     --ink-soft: #8A7460;
     --ink-faint: #C2AF97;
-    --line: #E4D4B8;
+    --line: #EEE2CC;
     --crust: #A9702F;
     --crust-dark: #8B5A22;
-    --rust: #8B4225;
     --rust-soft: #F1DCCB;
-    --gold: #C89A3C;
-    --done: #B7A489;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -36,179 +33,97 @@
     -webkit-tap-highlight-color: transparent;
   }
   body {
-    padding: max(32px, env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
+    padding: max(20px, env(safe-area-inset-top)) 18px calc(30px + env(safe-area-inset-bottom));
   }
-  .tm-shell { max-width: 660px; margin: 0 auto; }
-  .tm-header {
-    margin-bottom: 28px;
+  .tm-shell { max-width: 560px; margin: 0 auto; }
+
+  .tm-deco {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 6px;
+    user-select: none;
   }
-  .tm-logo {
-    width: 46px; height: 46px;
-    border-radius: 14px;
-    flex: none;
-    object-fit: cover;
-    box-shadow: 0 1px 0 rgba(74, 50, 34, 0.08);
+  .tm-deco img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
   }
+  .tm-deco img:nth-child(odd) { transform: rotate(-8deg) translateY(2px); }
+  .tm-deco img:nth-child(even) { transform: rotate(7deg); }
+  .tm-deco.bottom { margin-top: 22px; margin-bottom: 0; }
+
+  .tm-header { text-align: center; margin-bottom: 22px; }
   .tm-title {
-    font-size: 33px;
+    font-size: 30px;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
     margin: 0 0 4px;
   }
-  .tm-subtitle { font-size: 16px; color: var(--ink-soft); margin: 0; }
+  .tm-subtitle { font-size: 15px; color: var(--ink-soft); margin: 0; }
 
-  .tm-form {
+  .tm-add-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    padding: 18px 20px;
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .tm-add-input {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    background: var(--card);
     border-radius: 14px;
-    margin-bottom: 22px;
-  }
-  .tm-input-title {
-    flex: 1 1 200px;
-    border: none;
-    border-bottom: 1.5px solid var(--line);
-    background: transparent;
     font-size: 17px;
-    padding: 7px 2px;
+    padding: 13px 16px;
     color: var(--ink);
     outline: none;
+    font-family: inherit;
     transition: border-color 0.15s ease;
-    font-family: inherit;
   }
-  .tm-input-title:focus { border-bottom-color: var(--crust); }
-  .tm-input-title::placeholder { color: var(--ink-faint); }
-
-  .tm-input-genre {
-    flex: 1 1 120px;
-    border: none;
-    border-bottom: 1.5px solid var(--line);
-    background: transparent;
-    font-size: 15px;
-    padding: 7px 2px;
-    color: var(--ink);
-    outline: none;
-    font-family: inherit;
-  }
-  .tm-input-genre:focus { border-bottom-color: var(--crust); }
-  .tm-input-genre::placeholder { color: var(--ink-faint); }
-
-  .tm-input-date, .tm-select {
-    border: none;
-    border-bottom: 1.5px solid var(--line);
-    background: transparent;
-    font-size: 15px;
-    padding: 7px 2px;
-    color: var(--ink-soft);
-    outline: none;
-    font-family: inherit;
-  }
-  .tm-input-date:focus, .tm-select:focus { border-bottom-color: var(--crust); }
+  .tm-add-input:focus { border-color: var(--crust); }
+  .tm-add-input::placeholder { color: var(--ink-faint); }
 
   .tm-add-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: none;
     background: var(--crust);
     color: #fff;
-    border: none;
-    border-radius: 9px;
-    padding: 10px 16px;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 24px;
+    line-height: 1;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background 0.15s ease;
-    font-family: inherit;
   }
   .tm-add-btn:active { background: var(--crust-dark); }
   .tm-add-btn:disabled { background: var(--ink-faint); cursor: default; }
 
-  .tm-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 10px;
-  }
-  .tm-tab {
-    background: none;
-    border: none;
-    font-size: 15px;
-    color: var(--ink-soft);
-    padding: 8px 2px 10px;
-    cursor: pointer;
-    position: relative;
-    font-family: inherit;
-  }
-  .tm-tab.active { color: var(--ink); font-weight: 700; }
-  .tm-tab.active::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: var(--crust);
-    border-radius: 2px;
-  }
-
-  .tm-genre-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .tm-genre-row label {
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .tm-genre-filter {
+  .tm-card {
+    background: var(--card);
+    border-radius: 18px;
     border: 1px solid var(--line);
-    background: #fff;
-    border-radius: 999px;
-    font-size: 14px;
-    padding: 5px 12px;
-    color: var(--ink);
-    outline: none;
-    font-family: inherit;
+    overflow: hidden;
+    margin-bottom: 14px;
   }
-
-  .tm-group { margin-top: 22px; }
-  .tm-group-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .tm-group-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-  .tm-group-dot.rust { background: var(--rust); }
-  .tm-group-dot.crust { background: var(--crust); }
-  .tm-group-dot.ink { background: var(--ink-faint); }
-  .tm-group-dot.done { background: var(--done); }
 
   .tm-row {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    padding: 11px 4px;
+    gap: 14px;
+    padding: 16px 18px;
     border-bottom: 1px solid var(--line);
   }
   .tm-row:last-child { border-bottom: none; }
 
   .tm-check {
     flex: none;
-    width: 21px; height: 21px;
-    border-radius: 6px;
-    border: 1.5px solid var(--ink-faint);
+    width: 25px; height: 25px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-faint);
     background: #fff;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
@@ -216,28 +131,16 @@
     transition: border-color 0.15s ease, background 0.15s ease;
   }
   .tm-check.checked { background: var(--crust); border-color: var(--crust); }
-  .tm-check svg { width: 14px; height: 14px; color: #fff; }
+  .tm-check svg { width: 15px; height: 15px; color: #fff; }
   .tm-check.checked svg { animation: tm-pop 0.18s ease forwards; }
   @keyframes tm-pop { from { transform: scale(0); } to { transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) {
     .tm-check.checked svg { animation: none; }
   }
 
-  .tm-priority-dot {
-    flex: none;
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-  }
-  .tm-priority-dot.high { background: var(--rust); }
-  .tm-priority-dot.medium { background: var(--gold); }
-  .tm-priority-dot.low { background: var(--ink-faint); }
-
   .tm-title-text {
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
     font-size: 17px;
     cursor: text;
     padding: 2px 0;
@@ -247,7 +150,7 @@
 
   .tm-title-input {
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
     font-size: 17px;
     border: none;
     border-bottom: 1.5px solid var(--crust);
@@ -256,57 +159,6 @@
     padding: 2px 0;
     font-family: inherit;
     color: var(--ink);
-  }
-
-  .tm-genre-tag {
-    flex: none;
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    font-size: 13px;
-    padding: 3px 10px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-  }
-  .tm-genre-tag.empty {
-    border-style: dashed;
-    color: var(--ink-faint);
-  }
-  .tm-genre-input {
-    flex: none;
-    width: 100px;
-    border: none;
-    border-bottom: 1.5px solid var(--crust);
-    background: transparent;
-    font-size: 13px;
-    color: var(--ink);
-    outline: none;
-    font-family: inherit;
-  }
-
-  .tm-due-btn {
-    flex: none;
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: var(--ink-soft);
-    cursor: pointer;
-    padding: 2px 4px;
-    font-family: inherit;
-    white-space: nowrap;
-  }
-  .tm-due-btn.overdue { color: var(--rust); font-weight: 700; }
-  .tm-due-input {
-    flex: none;
-    border: none;
-    border-bottom: 1.5px solid var(--crust);
-    background: transparent;
-    font-size: 14px;
-    color: var(--ink);
-    outline: none;
-    font-family: inherit;
   }
 
   .tm-delete-btn {
@@ -317,70 +169,79 @@
     cursor: pointer;
     padding: 4px;
     display: flex;
-    border-radius: 5px;
-    transition: color 0.15s ease, background 0.15s ease;
+    border-radius: 6px;
+    opacity: 0.7;
+    transition: color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
   }
-  .tm-delete-btn:hover { color: var(--rust); background: var(--rust-soft); }
+  .tm-delete-btn:hover { color: #9C4B33; background: var(--rust-soft); opacity: 1; }
   .tm-delete-btn svg { width: 16px; height: 16px; }
 
+  .tm-done-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: inherit;
+    margin-bottom: 14px;
+  }
+  .tm-done-toggle .tm-chevron {
+    transition: transform 0.15s ease;
+  }
+  .tm-done-toggle.open .tm-chevron { transform: rotate(180deg); }
+
   .tm-empty {
-    margin-top: 40px;
-    padding: 30px 20px;
+    padding: 26px 18px;
     text-align: center;
     color: var(--ink-soft);
     font-size: 15px;
-    border: 1px dashed var(--line);
-    border-radius: 14px;
   }
 
-  .tm-check:focus-visible, .tm-priority-dot:focus-visible, .tm-delete-btn:focus-visible,
-  .tm-tab:focus-visible, .tm-due-btn:focus-visible, .tm-add-btn:focus-visible, .tm-genre-tag:focus-visible {
+  .tm-check:focus-visible, .tm-delete-btn:focus-visible, .tm-add-btn:focus-visible, .tm-done-toggle:focus-visible {
     outline: 2px solid var(--crust);
     outline-offset: 2px;
   }
 
-  @media (max-width: 480px) {
-    body { padding: 20px 14px 40px; }
-    .tm-title { font-size: 28px; }
-    .tm-logo { width: 38px; height: 38px; }
+  @media (max-width: 380px) {
+    .tm-title { font-size: 26px; }
+    .tm-deco img { width: 28px; height: 28px; }
   }
 </style>
 </head>
 <body>
   <div class="tm-shell">
+    <div class="tm-deco top" id="deco-top"></div>
+
     <div class="tm-header">
-      <img class="tm-logo" src="icon-192.png" alt="" />
-      <div>
-        <h1 class="tm-title">タスク管理</h1>
-        <p class="tm-subtitle" id="subtitle"></p>
-      </div>
+      <h1 class="tm-title">タスク管理</h1>
+      <p class="tm-subtitle" id="subtitle"></p>
     </div>
 
-    <form class="tm-form" id="add-form">
-      <input class="tm-input-title" id="new-title" type="text" placeholder="新しいタスクを入力" autocomplete="off" />
-      <input class="tm-input-genre" id="new-genre" type="text" placeholder="ジャンル(任意)" autocomplete="off" list="genre-suggestions" />
-      <datalist id="genre-suggestions"></datalist>
-      <input class="tm-input-date" id="new-due" type="date" />
-      <select class="tm-select" id="new-priority">
-        <option value="high">優先度: 高</option>
-        <option value="medium" selected>優先度: 中</option>
-        <option value="low">優先度: 低</option>
-      </select>
-      <button class="tm-add-btn" id="add-btn" type="submit" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-        追加
-      </button>
+    <form class="tm-add-row" id="add-form">
+      <input class="tm-add-input" id="new-title" type="text" placeholder="新しいタスクを入力" autocomplete="off" />
+      <button class="tm-add-btn" id="add-btn" type="submit" disabled aria-label="追加">＋</button>
     </form>
 
-    <div class="tm-tabs" id="tabs"></div>
-    <div class="tm-genre-row">
-      <label for="genre-filter">ジャンルで絞り込み</label>
-      <select class="tm-genre-filter" id="genre-filter">
-        <option value="">すべてのジャンル</option>
-      </select>
+    <div class="tm-card" id="active-card">
+      <div id="active-list"></div>
     </div>
 
-    <div id="list-area"></div>
+    <button class="tm-done-toggle" id="done-toggle" type="button">
+      <span id="done-label">完了（0）</span>
+      <svg class="tm-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="tm-card" id="done-card" hidden>
+      <div id="done-list"></div>
+    </div>
+
+    <div class="tm-deco bottom" id="deco-bottom"></div>
   </div>
 
   <script src="app.js"></script>
