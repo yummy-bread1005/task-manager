@@ -1,4 +1,4 @@
-const CACHE_NAME = 'task-manager-v2';
+const CACHE_NAME = 'task-manager-v3';
 const ASSETS = [
   './',
   './index.html',
